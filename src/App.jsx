@@ -549,7 +549,7 @@ const MainView = ({ scrollTo, navigateToResearch }) => {
                 <div className="absolute inset-0 bg-slate-900 rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
                     {/* Placeholder for Profile Photo */}
                     <img 
-                        src="/api/placeholder/600/800" 
+                        src="/profile.jpeg" 
                         alt="Anupa Supul" 
                         className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500"
                     />
