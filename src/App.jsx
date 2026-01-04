@@ -607,60 +607,93 @@ const MainView = ({ scrollTo, navigateToResearch }) => {
         </div>
       </section>
 
-      {/* ABOUT SECTION */}
+      {/* ABOUT SECTION (REDESIGNED) */}
       <section id="about" ref={aboutSectionRef} className="py-32 bg-slate-950 relative overflow-hidden">
-        {/* Subtle glowing elements */}
-        <div className="absolute top-1/2 left-0 w-64 h-64 bg-cyan-500/5 rounded-full blur-[80px] -translate-y-1/2"></div>
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500/5 rounded-full blur-[100px]"></div>
+        
+        {/* Enhanced Background Grid */}
+        <div className="absolute inset-0 bg-grid-pattern opacity-[0.03] animate-pulse"></div>
+        
+        {/* Animated Connecting Lines */}
+        <div className={`absolute top-1/2 left-1/2 w-px h-[500px] bg-gradient-to-b from-transparent via-cyan-500 to-transparent transition-all duration-1000 ${aboutSectionInView ? 'opacity-30' : 'opacity-0'}`} style={{ transform: 'translateY(-50%)', transitionDelay: '500ms' }}></div>
+        <div className={`absolute top-1/2 left-1/2 h-px w-[80%] max-w-4xl bg-gradient-to-r from-transparent via-purple-500 to-transparent transition-all duration-1000 ${aboutSectionInView ? 'opacity-30' : 'opacity-0'}`} style={{ transform: 'translate(-50%, -50%)', transitionDelay: '500ms' }}></div>
 
         <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-20 items-center">
-            {/* Left: Narrative */}
-            <div className={`space-y-8 ${aboutSectionInView ? 'animate-fade-in-up' : 'opacity-0'}`}>
-               <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
-                 Beyond the <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-500">Syntax</span>
-               </h2>
-               <div className="space-y-6 text-lg text-slate-400 leading-relaxed font-light">
-                 <p>
-                   I'm a Computer Science undergraduate from Sri Lanka, building a bridge between two worlds: full-stack development and academic research. My focus is on creating systems that are not only well-engineered but also informed by analytical rigor.
-                 </p>
-                 <p>
-                   I believe the most durable solutions come from a deep understanding of the problem. That's why I apply a research-oriented mindset to software, and a systems-building approach to research—whether it's architecting a scalable web application or training a neural network to identify agricultural diseases.
-                 </p>
-               </div>
-            </div>
-
-            {/* Right: Interactive Dual Mindset Visual */}
-            <div className="grid gap-6">
-              <GlassCard className={`hover:bg-slate-900/60 ${aboutSectionInView ? 'animate-slide-in-right' : 'opacity-0'}`}>
-                  <div className="flex items-start gap-6">
-                      <div className="p-4 bg-cyan-500/10 rounded-lg text-cyan-400">
-                          <Terminal size={32} />
-                      </div>
-                      <div>
-                          <h3 className="text-xl font-bold text-white mb-2">The Builder</h3>
-                          <p className="text-slate-400 text-sm leading-relaxed">
-                              I build and deploy complete systems with a focus on clean architecture and user-centric design. My toolkit includes Java Spring Boot and Node.js for the backend, and React with Tailwind for creating responsive, intuitive frontends.
-                          </p>
-                      </div>
-                  </div>
-              </GlassCard>
-
-              <GlassCard className={`hover:bg-slate-900/60 ${aboutSectionInView ? 'animate-slide-in-left' : 'opacity-0'}`} style={{ animationDelay: '200ms' }}>
-                  <div className="flex items-start gap-6">
-                      <div className="p-4 bg-purple-500/10 rounded-lg text-purple-400">
-                          <Activity size={32} />
-                      </div>
-                      <div>
-                          <h3 className="text-xl font-bold text-white mb-2">The Researcher</h3>
-                          <p className="text-slate-400 text-sm leading-relaxed">
-                              My current research involves using Convolutional Neural Networks (CNNs) to detect and classify leaf diseases in rice and chilli plants. It's a tangible application of machine learning that aims to solve a real-world problem in agriculture.
-                          </p>
-                      </div>
-                  </div>
-              </GlassCard>
-            </div>
+          
+          <div className="text-center mb-24">
+            <h2 className={`text-5xl md:text-6xl font-bold text-white leading-tight transition-all duration-700 ${aboutSectionInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+              Beyond the <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-500">Syntax</span>
+            </h2>
+            <p className={`text-lg text-slate-400 mt-4 max-w-2xl mx-auto transition-all duration-700 delay-200 ${aboutSectionInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+              I operate at the intersection of engineering and inquiry, building robust systems informed by a research-driven mindset.
+            </p>
           </div>
+
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            
+            {/* LEFT: BUILDER IDENTITY */}
+            <div 
+              className={`relative group transition-all duration-700 ${aboutSectionInView ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'}`} 
+              style={{ transitionDelay: '400ms' }}
+            >
+              <div className="absolute -inset-px bg-gradient-to-r from-cyan-500 to-blue-500 rounded-3xl opacity-0 group-hover:opacity-70 transition-opacity duration-300 blur-lg"></div>
+              <div className="relative bg-slate-900 border border-white/10 rounded-3xl p-8 h-full">
+                <div className="flex items-start gap-6">
+                    <div className="p-3 bg-slate-800 border border-white/10 rounded-lg text-cyan-400">
+                        <Terminal size={28} />
+                    </div>
+                    <div>
+                        <h3 className="text-2xl font-bold text-white mb-3">The Builder</h3>
+                        <p className="text-slate-400 text-base leading-relaxed">
+                            I build and deploy complete systems with a focus on clean architecture and user-centric design. My toolkit includes Java Spring Boot and Node.js for the backend, and React with Tailwind for creating responsive, intuitive frontends.
+                        </p>
+                    </div>
+                </div>
+              </div>
+            </div>
+
+            {/* RIGHT: NARRATIVE 1 */}
+            <div 
+              className={`text-lg text-slate-300 leading-relaxed font-light transition-all duration-700 ${aboutSectionInView ? 'opacity-100' : 'opacity-0'}`}
+              style={{ transitionDelay: '600ms' }}
+            >
+              I'm a Computer Science undergraduate from Sri Lanka, creating systems that are not only well-engineered but also informed by analytical rigor. My work bridges the gap between full-stack development and academic research.
+            </div>
+
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-16 items-center mt-16">
+
+            {/* LEFT: NARRATIVE 2 */}
+            <div 
+              className={`text-lg text-slate-300 leading-relaxed font-light lg:text-right transition-all duration-700 ${aboutSectionInView ? 'opacity-100' : 'opacity-0'}`}
+              style={{ transitionDelay: '800ms' }}
+            >
+              I believe the most durable solutions come from a deep understanding of the problem. That's why I apply a research-oriented mindset to software, and a systems-building approach to research.
+            </div>
+            
+            {/* RIGHT: RESEARCHER IDENTITY */}
+            <div 
+              className={`relative group transition-all duration-700 ${aboutSectionInView ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'}`} 
+              style={{ transitionDelay: '1000ms' }}
+            >
+              <div className="absolute -inset-px bg-gradient-to-r from-purple-500 to-rose-500 rounded-3xl opacity-0 group-hover:opacity-70 transition-opacity duration-300 blur-lg"></div>
+              <div className="relative bg-slate-900 border border-white/10 rounded-3xl p-8 h-full">
+                <div className="flex items-start gap-6">
+                    <div className="p-3 bg-slate-800 border border-white/10 rounded-lg text-purple-400">
+                        <Microscope size={28} />
+                    </div>
+                    <div>
+                        <h3 className="text-2xl font-bold text-white mb-3">The Researcher</h3>
+                        <p className="text-slate-400 text-base leading-relaxed">
+                            My current research involves using Convolutional Neural Networks (CNNs) to detect and classify leaf diseases in rice and chilli plants—a tangible application of machine learning to solve real-world problems in agriculture.
+                        </p>
+                    </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
         </div>
       </section>
 
@@ -688,28 +721,32 @@ const MainView = ({ scrollTo, navigateToResearch }) => {
 
             <div className="grid lg:grid-cols-3 gap-6 h-auto lg:h-[500px]">
                 {/* Main Interactive Card */}
-                <div 
+                <div
                     onClick={navigateToResearch}
-                    className="lg:col-span-2 group relative bg-slate-900 rounded-3xl overflow-hidden border border-white/10 cursor-pointer"
+                    className="lg:col-span-2 group relative rounded-3xl overflow-hidden border border-white/10 cursor-pointer"
                 >
-                    <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-900 to-cyan-900/20 z-0"></div>
-                    <div className="absolute inset-0 bg-grid-pattern opacity-20 transition-opacity duration-500 group-hover:opacity-40"></div>
-                    
+                    <img
+                        src="https://images.unsplash.com/photo-1586771107445-d3ca888129ff?auto=format&fit=crop&q=80&w=2072"
+                        alt="Rice Plant Research"
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent z-0"></div>
+
                     {/* Content */}
-                    <div className="absolute inset-0 p-10 flex flex-col justify-between z-10">
+                    <div className="relative inset-0 p-10 flex flex-col justify-between z-10 h-full">
                         <div className="flex justify-between items-start">
-                            <div className="p-3 bg-white/5 backdrop-blur-md rounded-xl border border-white/10">
+                            <div className="p-3 bg-black/40 backdrop-blur-md rounded-xl border border-white/10">
                                 <Microscope size={32} className="text-cyan-400" />
                             </div>
                             <ArrowRight size={32} className="text-white/50 -rotate-45 group-hover:rotate-0 group-hover:text-cyan-400 transition-all duration-300" />
                         </div>
-                        
-                        <div>
+
+                        <div className="mt-auto">
                             <h3 className="text-3xl md:text-5xl font-bold text-white mb-4 group-hover:translate-x-2 transition-transform duration-300">
-                                Explore the <br/>
+                                Explore the <br />
                                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Findings</span>
                             </h3>
-                            <p className="text-slate-400 max-w-md group-hover:text-slate-300 transition-colors">
+                            <p className="text-slate-300 max-w-md group-hover:text-slate-200 transition-colors">
                                 Access datasets, CNN model details, and experimental results for crop disease classification.
                             </p>
                         </div>
@@ -719,27 +756,38 @@ const MainView = ({ scrollTo, navigateToResearch }) => {
                 {/* Secondary Stats Column */}
                 <div className="flex flex-col gap-6 h-full">
                     {/* Stat Card 1 */}
-                    <div className="flex-1 bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-3xl p-8 flex flex-col justify-center hover:bg-slate-800/50 transition-colors">
-                        <div className="text-4xl font-bold text-white mb-2 font-mono">02</div>
-                        <div className="text-sm text-slate-500 font-mono uppercase tracking-wider">Crops Studied (Rice & Chilli)</div>
+                    <div className="flex-1 relative bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-3xl p-8 flex flex-col justify-end hover:bg-slate-800/50 transition-colors overflow-hidden group">
+                        <img
+                            src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=2065&auto=format&fit=crop"
+                            alt="Abstract AI"
+                            className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-50 transition-opacity duration-300"
+                        />
+                        <div className="relative z-10">
+                            <div className="text-4xl font-bold text-white mb-2 font-mono">02</div>
+                            <div className="text-sm text-slate-300 font-mono uppercase tracking-wider">Crops Studied (Rice & Chilli)</div>
+                        </div>
                     </div>
 
                     {/* Stat Card 2 */}
-                    <div className="flex-1 bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-3xl p-8 flex flex-col justify-center hover:bg-slate-800/50 transition-colors relative overflow-hidden">
-                          <div className="absolute top-0 right-0 p-6 opacity-10">
-                             <FileText size={64} />
-                          </div>
-                          <div className="text-4xl font-bold text-white mb-2 font-mono">100%</div>
-                          <div className="text-sm text-slate-500 font-mono uppercase tracking-wider">Real-World Data</div>
+                    <div className="flex-1 relative bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-3xl p-8 flex flex-col justify-end hover:bg-slate-800/50 transition-colors overflow-hidden group">
+                        <img
+                            src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=2070"
+                            alt="Data visualization"
+                            className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-50 transition-opacity duration-300"
+                        />
+                        <div className="relative z-10">
+                            <div className="text-4xl font-bold text-white mb-2 font-mono">100%</div>
+                            <div className="text-sm text-slate-300 font-mono uppercase tracking-wider">Real-World Data</div>
+                        </div>
                     </div>
 
                     {/* Latest Update */}
-                    <div className="flex-1 bg-gradient-to-r from-cyan-900/20 to-blue-900/20 border border-cyan-500/20 rounded-3xl p-6 flex items-center justify-between">
-                          <div>
-                             <div className="text-xs text-cyan-400 font-bold uppercase mb-1">Model Status</div>
-                             <div className="text-white font-medium text-sm">Training Active</div>
-                          </div>
-                          <Activity size={20} className="text-cyan-400" />
+                    <div className="flex-1 bg-slate-900/80 border border-slate-800 rounded-3xl p-6 flex items-center justify-between">
+                        <div>
+                            <div className="text-xs text-cyan-400 font-bold uppercase mb-1">Model Status</div>
+                            <div className="text-white font-medium text-sm">Training Active</div>
+                        </div>
+                        <Activity size={20} className="text-cyan-400" />
                     </div>
                 </div>
             </div>
