@@ -314,25 +314,55 @@ const MainView = ({ scrollTo, navigateToResearch }) => {
   const [selectedProject, setSelectedProject] = useState(null);
   const aboutSectionRef = useRef(null);
   const [aboutSectionInView, setAboutSectionInView] = useState(false);
+  const skillsSectionRef = useRef(null);
+  const [skillsSectionInView, setSkillsSectionInView] = useState(false);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
+    const aboutObserver = new IntersectionObserver(
+      ([entry]) => {
         if (entry.isIntersecting) {
           setAboutSectionInView(true);
-          observer.disconnect();
+          aboutObserver.disconnect();
         }
       },
       { threshold: 0.2 }
     );
 
     if (aboutSectionRef.current) {
-      observer.observe(aboutSectionRef.current);
+      aboutObserver.observe(aboutSectionRef.current);
     }
 
-    return () => observer.disconnect();
+    const skillsObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setSkillsSectionInView(true);
+          skillsObserver.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (skillsSectionRef.current) {
+      skillsObserver.observe(skillsSectionRef.current);
+    }
+
+    return () => {
+      if (aboutObserver) aboutObserver.disconnect();
+      if (skillsObserver) skillsObserver.disconnect();
+    };
   }, []);
+
+  // Skill Nodes Data for Hero Section
+  const skillNodes = [
+    { name: 'React', icon: Code, color: 'cyan' },
+    { name: 'Java', icon: Server, color: 'orange' },
+    { name: 'Spring Boot', icon: Database, color: 'green' },
+    { name: 'CNN', icon: Cpu, color: 'purple' },
+    { name: 'MySQL', icon: Database, color: 'blue' },
+    { name: 'Tailwind CSS', icon: Layout, color: 'teal' },
+    { name: 'Node.js', icon: Zap, color: 'emerald' },
+    { name: 'Git', icon: GitBranch, color: 'rose' },
+  ];
 
   // Structured Project Data for Filtering
   const projectsData = [
@@ -556,8 +586,36 @@ const MainView = ({ scrollTo, navigateToResearch }) => {
           </div>
           
           {/* Visual Element: Profile Photo Container */}
-          <div className="relative hidden lg:flex h-[600px] items-center justify-center perspective-1000">
-             <div className="relative w-80 h-96 group transition-all duration-500 hover:rotate-y-12 preserve-3d">
+          <div className="relative flex items-center justify-center h-96 lg:h-[600px] w-full lg:w-auto perspective-1000">
+             {/* Orbiting Skill Nodes Wrapper */}
+             <div className="absolute inset-0 flex items-center justify-center animate-orbit-parent">
+               {skillNodes.map((skill, index) => {
+                 // Calculate responsive radius based on smaller of width/height
+                 const radius = 'min(15rem, 40vw)'; // Using min for responsive radius
+                 const angle = index * (2 * Math.PI / skillNodes.length);
+                 return (
+                   <div
+                     key={skill.name}
+                     className={`absolute w-10 h-10 rounded-full border border-${skill.color}-500/50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center text-${skill.color}-400 opacity-60 hover:opacity-100 transition-all duration-300 cursor-pointer group animate-orbit-float`}
+                     style={{
+                       top: `calc(50% + ${radius} * ${Math.sin(angle)} - 20px)`,
+                       left: `calc(50% + ${radius} * ${Math.cos(angle)} - 20px)`,
+                       animationDelay: `${index * 0.3}s`,
+                       animationDuration: `${7 + (index * 0.5)}s`,
+                       animationDirection: index % 2 === 0 ? 'normal' : 'reverse',
+                     }}
+                   >
+                     <skill.icon size={18} />
+                     {/* Skill Name on Hover */}
+                     <div className={`absolute -top-8 px-2 py-1 bg-slate-800/80 backdrop-blur-sm text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none text-${skill.color}-300`}>
+                       {skill.name}
+                     </div>
+                   </div>
+                 );
+               })}
+             </div>
+
+             <div className="relative w-64 h-80 sm:w-80 sm:h-96 group transition-all duration-500 hover:rotate-y-12 preserve-3d">
                 
                 {/* Rotating Rings */}
                 <div className="absolute -inset-10 border border-dashed border-cyan-500/20 rounded-full animate-spin-slow pointer-events-none"></div>
@@ -698,7 +756,7 @@ const MainView = ({ scrollTo, navigateToResearch }) => {
       </section>
 
       {/* REIMAGINED RESEARCH TEASER (HOME PAGE) */}
-      <section id="research" className="py-32 relative overflow-hidden bg-black border-y border-white/5">
+      <section id="research" className="py-32 relative overflow-hidden bg-gradient-to-b from-slate-950 to-black">
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none"></div>
 
@@ -723,7 +781,7 @@ const MainView = ({ scrollTo, navigateToResearch }) => {
                 {/* Main Interactive Card */}
                 <div
                     onClick={navigateToResearch}
-                    className="lg:col-span-2 group relative rounded-3xl overflow-hidden border border-white/10 cursor-pointer"
+                    className="lg:col-span-2 group relative rounded-3xl overflow-hidden border border-white/10 cursor-pointer h-auto min-h-[300px] lg:h-[500px]"
                 >
                     <img
                         src="https://images.unsplash.com/photo-1586771107445-d3ca888129ff?auto=format&fit=crop&q=80&w=2072"
@@ -794,74 +852,111 @@ const MainView = ({ scrollTo, navigateToResearch }) => {
         </div>
       </section>
 
-      {/* SKILLS SECTION */}
-      <section id="skills" className="py-24 bg-slate-950 border-t border-white/5">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">Technical Arsenal</h2>
-            <p className="text-slate-400">Full-stack capabilities with a focus on scalability and precision.</p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Backend */}
-            <div className="bg-slate-800/50 p-8 rounded-2xl backdrop-blur-sm border border-slate-700/50 hover:border-cyan-500/50 transition-all hover:shadow-[0_0_30px_rgba(6,182,212,0.15)] group h-full">
-              <div className="w-14 h-14 bg-indigo-500/10 rounded-xl flex items-center justify-center text-indigo-400 mb-6 group-hover:scale-110 transition-transform">
-                <Server size={28} />
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-4">Backend</h3>
-              <p className="text-slate-400 mb-6 text-sm leading-relaxed min-h-[60px]">
-                I prioritize clean architecture and maintainable systems. I build robust APIs that can handle real-world loads.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {['Java', 'Spring Boot', 'Node.js', 'REST APIs'].map(skill => (
-                  <span key={skill} className="px-3 py-1 bg-slate-900 text-slate-300 text-xs font-medium rounded-full border border-slate-700">
-                    {skill}
-                  </span>
-                ))}
-              </div>
+      {/* SKILLS SECTION (REDESIGNED) */}
+      <section id="skills" ref={skillsSectionRef} className="py-32 relative overflow-hidden bg-gradient-to-b from-black to-slate-950">
+        <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(6,182,212,0.04),transparent_40%)]"></div>
+        
+        {/* Animated Connecting Lines */}
+        <div className={`absolute left-1/3 top-0 h-full w-px bg-gradient-to-b from-transparent via-cyan-500/50 to-transparent transition-opacity duration-1000 delay-500 ${skillsSectionInView ? 'opacity-20' : 'opacity-0'}`}></div>
+        <div className={`absolute left-2/3 top-0 h-full w-px bg-gradient-to-b from-transparent via-purple-500/50 to-transparent transition-opacity duration-1000 delay-500 ${skillsSectionInView ? 'opacity-20' : 'opacity-0'}`}></div>
+        
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+            <div className="text-center mb-20">
+                <h2 className={`text-5xl md:text-6xl font-bold text-white transition-all duration-700 ${skillsSectionInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+                  Technical System
+                </h2>
+                <p className={`text-lg text-slate-400 mt-4 max-w-3xl mx-auto transition-all duration-700 delay-200 ${skillsSectionInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+                    A modular skill set designed for building and scaling complex systems, from backend architecture to frontend interactions and data management.
+                </p>
             </div>
 
-            {/* Frontend */}
-            <div className="bg-slate-800/50 p-8 rounded-2xl backdrop-blur-sm border border-slate-700/50 hover:border-teal-500/50 transition-all hover:shadow-[0_0_30px_rgba(20,184,166,0.15)] group h-full">
-              <div className="w-14 h-14 bg-teal-500/10 rounded-xl flex items-center justify-center text-teal-400 mb-6 group-hover:scale-110 transition-transform">
-                <Layout size={28} />
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-4">Frontend</h3>
-              <p className="text-slate-400 mb-6 text-sm leading-relaxed min-h-[60px]">
-                I refine designs for clarity and usability. A system is only as good as its interface.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {['React', 'Tailwind CSS', 'JavaScript', 'Responsive UI'].map(skill => (
-                  <span key={skill} className="px-3 py-1 bg-slate-900 text-slate-300 text-xs font-medium rounded-full border border-slate-700">
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </div>
+            <div className="grid md:grid-cols-3 gap-x-12 gap-y-16">
+                {/* Module 1: Backend */}
+                <div 
+                  className={`space-y-8 transition-all duration-700 ease-out ${skillsSectionInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} 
+                  style={{ transitionDelay: '200ms' }}
+                >
+                    <div className="flex items-center gap-4">
+                        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-indigo-500/10 text-indigo-400 border-2 border-indigo-500/30 shadow-[0_0_20px_rgba(99,102,241,0.3)]">
+                          <Server size={28} />
+                        </div>
+                        <h3 className="text-3xl font-bold text-white">Backend</h3>
+                    </div>
+                    <p className="text-slate-400 leading-relaxed text-lg font-light">
+                        Clean architecture and robust APIs built for performance and scalability.
+                    </p>
+                    <div className="space-y-4 pt-4 border-t-2 border-slate-800">
+                        {[
+                          { name: 'Java', icon: Code }, { name: 'Spring Boot', icon: Server },
+                          { name: 'Node.js', icon: Zap }, { name: 'REST APIs', icon: Globe }
+                        ].map((skill, i) => (
+                           <div key={i} className={`group relative flex items-center gap-4 rounded-xl border border-slate-800 bg-slate-900/60 p-4 transition-all duration-300 hover:border-cyan-500/30 hover:bg-slate-800/50 hover:shadow-[0_0_40px_rgba(6,182,212,0.2)] will-change-transform ${skillsSectionInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: `${500 + i * 100}ms` }}>
+                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-800 text-slate-400 transition-colors group-hover:bg-cyan-500/10 group-hover:text-cyan-400"><skill.icon size={20} /></div>
+                            <span className="font-mono text-base text-slate-300">{skill.name}</span>
+                            <div className="absolute -left-4 top-1/2 h-px w-4 bg-slate-700 transition-all group-hover:w-8 group-hover:bg-cyan-500"></div>
+                           </div>
+                        ))}
+                    </div>
+                </div>
 
-            {/* Data & Tools */}
-            <div className="bg-slate-800/50 p-8 rounded-2xl backdrop-blur-sm border border-slate-700/50 hover:border-rose-500/50 transition-all hover:shadow-[0_0_30px_rgba(244,63,94,0.15)] group h-full">
-              <div className="w-14 h-14 bg-rose-500/10 rounded-xl flex items-center justify-center text-rose-400 mb-6 group-hover:scale-110 transition-transform">
-                <Database size={28} />
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-4">Data & Tools</h3>
-              <p className="text-slate-400 mb-6 text-sm leading-relaxed min-h-[60px]">
-                From managing relational data to version control, I use industry-standard tools to ensure data integrity.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {['MySQL', 'MongoDB', 'Git', 'IntelliJ', 'VS Code'].map(skill => (
-                  <span key={skill} className="px-3 py-1 bg-slate-900 text-slate-300 text-xs font-medium rounded-full border border-slate-700">
-                    {skill}
-                  </span>
-                ))}
-              </div>
+                {/* Module 2: Frontend */}
+                <div 
+                  className={`space-y-8 transition-all duration-700 ease-out ${skillsSectionInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} 
+                  style={{ transitionDelay: '400ms' }}
+                >
+                    <div className="flex items-center gap-4">
+                        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-teal-500/10 text-teal-400 border-2 border-teal-500/30 shadow-[0_0_20px_rgba(20,184,166,0.3)]"><Layout size={28} /></div>
+                        <h3 className="text-3xl font-bold text-white">Frontend</h3>
+                    </div>
+                    <p className="text-slate-400 leading-relaxed text-lg font-light">
+                        Intuitive interfaces that translate complex data into user-friendly experiences.
+                    </p>
+                    <div className="space-y-4 pt-4 border-t-2 border-slate-800">
+                        {[
+                          { name: 'React', icon: Code }, { name: 'Tailwind CSS', icon: Layout },
+                          { name: 'JavaScript', icon: Code }, { name: 'Responsive UI', icon: Layout }
+                        ].map((skill, i) => (
+                           <div key={i} className={`group relative flex items-center gap-4 rounded-xl border border-slate-800 bg-slate-900/60 p-4 transition-all duration-300 hover:border-cyan-500/30 hover:bg-slate-800/50 hover:shadow-[0_0_40px_rgba(6,182,212,0.2)] will-change-transform ${skillsSectionInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: `${700 + i * 100}ms` }}>
+                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-800 text-slate-400 transition-colors group-hover:bg-cyan-500/10 group-hover:text-cyan-400"><skill.icon size={20} /></div>
+                            <span className="font-mono text-base text-slate-300">{skill.name}</span>
+                            <div className="absolute left-1/2 -top-4 h-4 w-px bg-slate-700 transition-all group-hover:h-8 group-hover:bg-cyan-500"></div>
+                           </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Module 3: Data & Tools */}
+                <div 
+                  className={`space-y-8 transition-all duration-700 ease-out ${skillsSectionInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} 
+                  style={{ transitionDelay: '600ms' }}
+                >
+                     <div className="flex items-center gap-4">
+                        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 text-rose-400 border-2 border-rose-500/30 shadow-[0_0_20px_rgba(244,63,94,0.3)]"><Database size={28} /></div>
+                        <h3 className="text-3xl font-bold text-white">Data & Tools</h3>
+                    </div>
+                    <p className="text-slate-400 leading-relaxed text-lg font-light">
+                        Ensuring data integrity, version control, and efficient development workflows.
+                    </p>
+                    <div className="space-y-4 pt-4 border-t-2 border-slate-800">
+                        {[
+                          { name: 'MySQL', icon: Database }, { name: 'MongoDB', icon: Database },
+                          { name: 'Git', icon: GitBranch }, { name: 'IntelliJ', icon: Terminal }, { name: 'VS Code', icon: Terminal }
+                        ].map((skill, i) => (
+                           <div key={i} className={`group relative flex items-center gap-4 rounded-xl border border-slate-800 bg-slate-900/60 p-4 transition-all duration-300 hover:border-cyan-500/30 hover:bg-slate-800/50 hover:shadow-[0_0_40px_rgba(6,182,212,0.2)] will-change-transform ${skillsSectionInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: `${900 + i * 100}ms` }}>
+                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-800 text-slate-400 transition-colors group-hover:bg-cyan-500/10 group-hover:text-cyan-400"><skill.icon size={20} /></div>
+                            <span className="font-mono text-base text-slate-300">{skill.name}</span>
+                            <div className="absolute -right-4 top-1/2 h-px w-4 bg-slate-700 transition-all group-hover:w-8 group-hover:bg-cyan-500"></div>
+                           </div>
+                        ))}
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
       </section>
 
       {/* PROJECTS SECTION (UPDATED with Filtering) */}
-      <section id="projects" className="py-24 bg-slate-950">
+      <section id="projects" className="py-24 bg-gradient-to-b from-slate-950 to-slate-900">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">Engineering Projects</h2>
@@ -896,7 +991,7 @@ const MainView = ({ scrollTo, navigateToResearch }) => {
                 onClick={() => setSelectedProject(project)}
                 className={`group bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 hover:border-${project.color}-500/50 transition-all hover:shadow-[0_0_40px_rgba(var(--${project.color}-rgb),0.15)] flex flex-col h-full animate-fade-in cursor-pointer`}
               >
-                <div className="h-64 relative overflow-hidden bg-slate-800">
+                <div className="h-48 md:h-64 relative overflow-hidden bg-slate-800">
                     <div className="absolute inset-0 bg-slate-900/40 z-10 group-hover:bg-transparent transition-colors duration-500"></div>
                     <img 
                       src={project.image} 
@@ -943,8 +1038,54 @@ const MainView = ({ scrollTo, navigateToResearch }) => {
 )};
 
 // 2. Next-Level Research View
-const ResearchView = () => (
-  <div className="pt-20 min-h-screen bg-black text-slate-300 font-sans animate-fade-in relative">
+const ResearchView = () => {
+  const publicationsRef = useRef(null);
+  const [publicationsInView, setPublicationsInView] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setPublicationsInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    let currentRef = publicationsRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, []);
+
+  const publications = [
+    {
+      title: 'Deep CNN for Plant Disease Detection in Rice Crops',
+      description: 'A novel approach to identifying Brown Spot and Leaf Blast diseases using transfer learning.',
+      venue: 'IEEE International Conference on Image Processing (ICIP)',
+      year: '2025',
+      image: 'https://images.unsplash.com/photo-1581092921462-698338d35393?q=80&w=2070&auto=format&fit=crop',
+      scholarLink: 'https://scholar.google.com/scholar?q=deep+cnn+plant+disease',
+    },
+    {
+      title: 'Scalable Framework for Multi-Crop Disease Classification',
+      description: 'An extendable architecture for applying CNN-based disease detection to new crop types.',
+      venue: 'Journal of Agricultural AI',
+      year: '2024',
+      image: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=2070&auto=format&fit=crop',
+      scholarLink: 'https://scholar.google.com/scholar?q=scalable+framework+crop+disease',
+    }
+  ];
+
+  return (
+    <div className="pt-20 min-h-screen bg-gradient-to-b from-black via-slate-950 to-black text-slate-300 font-sans animate-fade-in relative">
       
       {/* Cinematic Background */}
       <div className="fixed inset-0 pointer-events-none z-0">
@@ -983,37 +1124,55 @@ const ResearchView = () => (
                   </div>
                   <div className="space-y-2">
                       <div className="text-xs text-slate-500 font-mono uppercase">Affiliation</div>
-                      <div className="text-xl text-white font-medium">University of Ruhuna <br/> CompSci Dept.</div>
+                      <div className="text-xl text-white font-medium">University of Ruhuna <br/> Department Of Computer Science</div>
                   </div>
               </div>
           </div>
       </section>
 
-      {/* Methodology Pipeline (Horizontal Scroll) */}
-      <section className="py-24 border-y border-white/5 bg-slate-900/20 backdrop-blur-sm relative z-10">
+      {/* Methodology Pipeline (REDESIGNED) */}
+      <section className="py-32 bg-slate-900/50 relative z-10 overflow-hidden">
+          <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
           <div className="max-w-7xl mx-auto px-6">
-              <h2 className="text-2xl font-bold text-white mb-12 flex items-center gap-3">
-                  <GitBranch className="text-cyan-500" /> Research Pipeline
-              </h2>
+              <div className="text-center mb-20">
+                <h2 className="text-4xl font-bold text-white mb-4 flex items-center justify-center gap-3">
+                    <GitBranch className="text-cyan-500" /> Research Pipeline
+                </h2>
+                <p className="text-slate-400 text-lg max-w-2xl mx-auto">A systematic, four-stage process from data acquisition to model validation.</p>
+              </div>
               
               <div className="relative">
-                  {/* Connecting Line */}
-                  <div className="absolute top-8 left-0 w-full h-0.5 bg-gradient-to-r from-cyan-900 via-cyan-500/50 to-cyan-900 hidden md:block"></div>
+                  {/* The static track and animated connector line */}
+                  <div className="absolute top-10 left-0 w-full h-0.5 bg-slate-700"></div>
+                  <div className="absolute top-10 left-0 w-full h-0.5">
+                      <div className="w-full h-full bg-gradient-to-r from-cyan-500/0 via-cyan-500 to-cyan-500/0 animate-flow-beam"></div>
+                  </div>
 
-                  <div className="grid md:grid-cols-4 gap-8">
+                  <div className="relative flex flex-wrap justify-center gap-y-12 sm:justify-between">
                       {[
-                          { step: "01", title: "Data Collection", desc: "Gathering real-world leaf images of Rice & Chilli crops in diverse field conditions.", icon: <Beaker size={20}/> },
-                          { step: "02", title: "Preprocessing", desc: "Data cleaning, augmentation, and labeling to ensure robust model training.", icon: <Code size={20}/> },
-                          { step: "03", title: "Model Design", desc: "Training Convolutional Neural Networks (CNNs) to identify disease patterns.", icon: <Play size={20}/> },
-                          { step: "04", title: "Evaluation", desc: "Validating detection accuracy and refining the architecture for real-world use.", icon: <Activity size={20}/> }
+                          { title: "Data Collection", desc: "Gathering real-world leaf images of Rice & Chilli crops in diverse field conditions.", icon: <Beaker size={28}/> },
+                          { title: "Preprocessing", desc: "Data cleaning, augmentation, and labeling to ensure robust model training.", icon: <Code size={28}/> },
+                          { title: "Model Design", desc: "Training Convolutional Neural Networks (CNNs) to identify disease patterns.", icon: <Play size={28}/> },
+                          { title: "Evaluation", desc: "Validating detection accuracy and refining the architecture for real-world use.", icon: <Activity size={28}/> }
                       ].map((item, idx) => (
-                          <div key={idx} className="relative group">
-                              <div className="w-16 h-16 bg-slate-900 border border-cyan-500/30 rounded-full flex items-center justify-center text-cyan-400 mb-6 relative z-10 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_20px_rgba(6,182,212,0.2)]">
-                                  {item.icon}
+                          <div key={idx} className="relative group flex flex-col items-center text-center w-full sm:w-1/2 md:w-1/4 max-w-[280px]">
+                              <div className="relative w-20 h-20 flex items-center justify-center mb-6">
+                                  {/* Static outer ring */}
+                                  <div className="absolute inset-0 rounded-full bg-slate-800 border-2 border-slate-700"></div>
+                                  {/* Animated inner rings/glow on hover */}
+                                  <div className="absolute inset-0 rounded-full border-2 border-cyan-500/50 opacity-0 group-hover:opacity-100 group-hover:animate-ping-slow transition-opacity duration-300"></div>
+                                  <div className="absolute inset-2 rounded-full bg-slate-900 group-hover:bg-cyan-900/40 transition-colors duration-300"></div>
+                                  <div className="relative z-10 text-cyan-400 group-hover:text-white transition-colors duration-300">
+                                      {item.icon}
+                                  </div>
                               </div>
-                              <div className="font-mono text-cyan-500 text-xs mb-2">STEP {item.step}</div>
-                              <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
-                              <p className="text-slate-400 text-sm leading-relaxed">{item.desc}</p>
+                              <div className="text-center">
+                                <div className="font-mono text-cyan-400 text-sm">STEP {`0${idx + 1}`}</div>
+                                <h3 className="text-2xl font-bold text-white mt-1">{item.title}</h3>
+                                <p className="text-slate-400 text-base mt-3 h-0 opacity-0 group-hover:h-24 group-hover:opacity-100 transition-all duration-500 ease-in-out">
+                                  {item.desc}
+                                </p>
+                              </div>
                           </div>
                       ))}
                   </div>
@@ -1021,98 +1180,81 @@ const ResearchView = () => (
           </div>
       </section>
 
-      {/* Immersive Gallery Section */}
+      {/* Image Swipe Component */}
       <section className="py-32 relative z-10">
-          <div className="max-w-7xl mx-auto px-6">
-              <div className="flex justify-between items-end mb-12">
-                  <div>
-                      <h2 className="text-4xl font-bold text-white mb-2">Dataset Samples</h2>
-                      <p className="text-slate-500">Real-world imagery used for training and validation.</p>
+        <div className="max-w-7xl mx-auto px-6">
+          <ResearchCarousel items={[
+            {
+              image: 'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?auto=format&fit=crop&q=80&w=2072',
+              title: 'Rice Leaf Analysis',
+              description: 'High-resolution imagery of rice crops used for training disease detection models.'
+            },
+            {
+              image: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=2065&auto=format&fit=crop',
+              title: 'Chilli Crop Inspection',
+              description: 'Field data collection for chilli plants, capturing various stages of growth and health.'
+            },
+            {
+              image: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&q=80&w=2070',
+              title: 'CNN Model Architecture',
+              description: 'Visualizing the convolutional neural network pipeline for image processing and classification.'
+            }
+          ]} />
+        </div>
+      </section>
+
+      {/* NEW PUBLICATIONS SECTION */}
+      <section ref={publicationsRef} className="py-32 relative z-10">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-left mb-16">
+            <h2 className="text-4xl font-bold text-white mb-4">Publications & Citations</h2>
+            <p className="text-slate-400 max-w-2xl text-lg">
+              A selection of peer-reviewed papers and articles. For a complete list, please view my Google Scholar profile.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {publications.map((pub, i) => (
+              <div
+                key={i}
+                className={`group relative bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden transition-all duration-500 ease-out ${publicationsInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+                style={{ transitionDelay: `${200 + i * 150}ms` }}
+              >
+                <div className="absolute inset-0 w-full h-full">
+                  <img src={pub.image} alt="Abstract representation" className="w-full h-full object-cover opacity-10 group-hover:opacity-20 transition-opacity duration-300" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent"></div>
+                </div>
+                <div className="relative p-8 h-full flex flex-col">
+                  <div className="flex-grow">
+                    <p className="text-sm font-mono text-cyan-400 mb-2">{pub.year} / {pub.venue}</p>
+                    <h3 className="text-2xl font-bold text-white mb-3 relative">
+                      {pub.title}
+                      <span className="absolute left-0 -bottom-2 h-0.5 w-0 bg-cyan-400 transition-all duration-500 group-hover:w-full"></span>
+                    </h3>
+                    <p className="text-slate-400 leading-relaxed">{pub.description}</p>
                   </div>
-                  <div className="hidden md:flex gap-2">
-                      <div className="h-2 w-2 bg-red-500 rounded-full animate-pulse"></div>
-                      <div className="text-xs font-mono text-red-500">REC</div>
+                  <div className="mt-6 pt-6 border-t border-slate-800/50">
+                    <a href={pub.scholarLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-bold text-slate-300 hover:text-cyan-400 transition-colors group/link">
+                      Read on Google Scholar
+                      <ExternalLink className="w-4 h-4 transition-transform group-hover/link:translate-x-1" />
+                    </a>
                   </div>
+                </div>
               </div>
-              
-              <ResearchCarousel 
-                  items={[
-                      {
-                        image: "https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=2072&auto=format&fit=crop",
-                        title: "Rice Leaf Dataset",
-                        description: "Collection of field-captured images showing various stages of disease in rice crops for classification training."
-                      },
-                      {
-                        image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=2065&auto=format&fit=crop",
-                        title: "CNN Training Pipeline",
-                        description: "Visualizing feature extraction layers within the deep learning model as it processes leaf patterns."
-                      },
-                      {
-                        image: "https://images.unsplash.com/photo-1588252303782-cb80119abd6d?q=80&w=2070&auto=format&fit=crop",
-                        title: "Chilli Crop Analysis",
-                        description: "High-resolution samples of chilli leaves used to expand the model's multi-crop capabilities."
-                      }
-                  ]}
-              />
+            ))}
           </div>
-      </section>
-
-      {/* Publications / Output Grid */}
-      <section className="py-24 bg-slate-900/30 border-t border-white/5 relative z-10">
-          <div className="max-w-7xl mx-auto px-6">
-              <h2 className="text-3xl font-bold text-white mb-12">Research Outputs</h2>
-              
-              <div className="grid md:grid-cols-2 gap-6">
-                  {/* Publication 1 */}
-                  <GlassCard className="hover:bg-cyan-900/10 cursor-pointer group">
-                      <div className="flex justify-between items-start mb-6">
-                          <div className="p-3 bg-white/5 rounded-lg">
-                              <FileText className="text-cyan-400" size={24} />
-                          </div>
-                          <ExternalLink className="text-slate-500 group-hover:text-white transition-colors" size={20} />
-                      </div>
-                      <div className="text-xs font-mono text-slate-500 mb-2">CORE MODEL</div>
-                      <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors">CNN Disease Detection</h3>
-                      <p className="text-slate-400 text-sm mb-6">A robust Convolutional Neural Network trained to accurately classify healthy vs. diseased leaves in Rice and Chilli crops.</p>
-                      <div className="flex gap-2">
-                          <span className="px-2 py-1 bg-black/50 border border-white/10 rounded text-[10px] text-slate-400 font-mono">Deep Learning</span>
-                          <span className="px-2 py-1 bg-black/50 border border-white/10 rounded text-[10px] text-slate-400 font-mono">Agriculture</span>
-                      </div>
-                  </GlassCard>
-
-                  {/* Publication 2 */}
-                  <GlassCard className="hover:bg-purple-900/10 cursor-pointer group">
-                      <div className="flex justify-between items-start mb-6">
-                          <div className="p-3 bg-white/5 rounded-lg">
-                              <Box className="text-purple-400" size={24} />
-                          </div>
-                          <ExternalLink className="text-slate-500 group-hover:text-white transition-colors" size={20} />
-                      </div>
-                      <div className="text-xs font-mono text-slate-500 mb-2">METHODOLOGY</div>
-                      <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-purple-400 transition-colors">Scalable Detection Framework</h3>
-                      <p className="text-slate-400 text-sm mb-6">A research framework designed to be extendable, allowing the same detection logic to be applied to other crops and tree species.</p>
-                      <div className="flex gap-2">
-                          <span className="px-2 py-1 bg-black/50 border border-white/10 rounded text-[10px] text-slate-400 font-mono">Scalability</span>
-                          <span className="px-2 py-1 bg-black/50 border border-white/10 rounded text-[10px] text-slate-400 font-mono">Computer Vision</span>
-                      </div>
-                  </GlassCard>
-              </div>
+          
+          <div className="mt-16 text-center">
+            <a href="https://scholar.google.com/citations?user=your-scholar-id" target="_blank" rel="noopener noreferrer" className="group relative inline-flex items-center justify-center px-8 py-4 bg-transparent border-2 border-slate-700 rounded-full text-lg font-bold text-white transition-all duration-300 overflow-hidden hover:border-cyan-500 hover:shadow-[0_0_20px_rgba(6,182,212,0.5)]">
+              <span className="absolute inset-0 w-0 bg-cyan-500/20 transition-all duration-300 ease-out group-hover:w-full"></span>
+              <span className="relative">View Full Scholar Profile</span>
+            </a>
           </div>
+        </div>
       </section>
-
-      {/* Footer / Contact for Research */}
-      <section className="py-20 border-t border-white/10 relative z-10">
-          <div className="max-w-7xl mx-auto px-6 flex flex-col items-center text-center">
-              <h2 className="text-2xl text-slate-400 font-light mb-8">
-                  Interested in collaborating on <span className="text-white font-bold">Plant Disease AI</span>?
-              </h2>
-              <a href="mailto:email@example.com" className="px-8 py-4 bg-white text-black font-bold rounded-full hover:bg-cyan-400 transition-all shadow-[0_0_30px_rgba(255,255,255,0.2)]">
-                  Initiate Comms
-              </a>
-          </div>
-      </section>
-  </div>
-);
+    </div>
+  );
+};
 
 
 // --- Main Component ---
@@ -1296,6 +1438,19 @@ const App = () => {
           50% { transform: translateY(-20px); }
           100% { transform: translateY(0px); }
         }
+        @keyframes orbit-parent {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes orbit-float {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(-8px, 8px); }
+            100% { transform: translate(0, 0); }
+        }
+        @keyframes signal-scan {
+          0% { background-position: -200% 0; }
+          100% { background-position: 200% 0; }
+        }
 
         @keyframes slide-in-left {
           from { opacity: 0; transform: translateX(-20px); }
@@ -1310,6 +1465,23 @@ const App = () => {
         }
         .animate-slide-in-right {
             animation: slide-in-right 0.8s ease-out forwards;
+        }
+        @keyframes flow-beam {
+          0% { transform: translateX(-100%); opacity: 0; }
+          50% { opacity: 0.8; }
+          100% { transform: translateX(100%); opacity: 0; }
+        }
+        .animate-flow-beam {
+          animation: flow-beam 4s ease-in-out infinite;
+        }
+        @keyframes ping-slow {
+          75%, 100% {
+            transform: scale(1.6);
+            opacity: 0;
+          }
+        }
+        .animate-ping-slow {
+          animation: ping-slow 2s cubic-bezier(0, 0, 0.2, 1) infinite;
         }
       `}</style>
 
@@ -1377,7 +1549,7 @@ const App = () => {
       )}
 
       {/* FOOTER (Shared across views) */}
-      <footer id="contact" className="bg-black pt-32 pb-10 relative overflow-hidden border-t border-slate-900">
+      <footer id="contact" className="bg-gradient-to-b from-slate-900 to-black pt-32 pb-10 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full overflow-hidden leading-none opacity-[0.03] pointer-events-none select-none">
           <span className="text-[20vw] font-bold text-white whitespace-nowrap animate-float-slow">CONNECT</span>
         </div>
@@ -1393,14 +1565,14 @@ const App = () => {
                    I'm available for research collaborations, full-stack opportunities, or just a chat about systems architecture.
                  </p>
                  
-                 <a href="mailto:your.email@example.com" className="inline-flex items-center gap-3 px-8 py-4 bg-white text-black font-bold rounded-full hover:bg-cyan-400 transition-colors text-lg group">
+                 <a href="mailto:supulanupa@gmail.com" className="inline-flex items-center gap-3 px-8 py-4 bg-white text-black font-bold rounded-full hover:bg-cyan-400 transition-colors text-lg group">
                    Start a Conversation
                    <ArrowRight className="group-hover:translate-x-1 transition-transform" />
                  </a>
              </div>
 
              <div className="flex flex-col justify-center gap-6">
-                 <a href="#" className="group flex items-center justify-between p-6 bg-slate-900/50 border border-slate-800 rounded-2xl hover:border-cyan-500/50 hover:bg-slate-900 transition-all">
+                 <a href="https://www.linkedin.com/in/anupa-supul-a511822ab/" className="group flex items-center justify-between p-6 bg-slate-900/50 border border-slate-800 rounded-2xl hover:border-cyan-500/50 hover:bg-slate-900 transition-all">
                     <div className="flex items-center gap-4">
                       <div className="p-3 bg-blue-600/20 text-blue-400 rounded-xl group-hover:scale-110 transition-transform">
                         <Linkedin size={24} />
@@ -1413,7 +1585,7 @@ const App = () => {
                     <ExternalLink className="text-slate-600 group-hover:text-white transition-colors" size={20} />
                  </a>
 
-                 <a href="#" className="group flex items-center justify-between p-6 bg-slate-900/50 border border-slate-800 rounded-2xl hover:border-purple-500/50 hover:bg-slate-900 transition-all">
+                 <a href="https://github.com/Anupa200212" className="group flex items-center justify-between p-6 bg-slate-900/50 border border-slate-800 rounded-2xl hover:border-purple-500/50 hover:bg-slate-900 transition-all">
                     <div className="flex items-center gap-4">
                       <div className="p-3 bg-purple-600/20 text-purple-400 rounded-xl group-hover:scale-110 transition-transform">
                         <Github size={24} />
