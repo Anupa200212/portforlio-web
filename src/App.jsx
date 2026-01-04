@@ -1148,14 +1148,14 @@ const ResearchView = () => {
                       <div className="w-full h-full bg-gradient-to-r from-cyan-500/0 via-cyan-500 to-cyan-500/0 animate-flow-beam"></div>
                   </div>
 
-                  <div className="relative flex justify-between">
+                  <div className="relative flex flex-wrap justify-center gap-y-12 sm:justify-between">
                       {[
                           { title: "Data Collection", desc: "Gathering real-world leaf images of Rice & Chilli crops in diverse field conditions.", icon: <Beaker size={28}/> },
                           { title: "Preprocessing", desc: "Data cleaning, augmentation, and labeling to ensure robust model training.", icon: <Code size={28}/> },
                           { title: "Model Design", desc: "Training Convolutional Neural Networks (CNNs) to identify disease patterns.", icon: <Play size={28}/> },
                           { title: "Evaluation", desc: "Validating detection accuracy and refining the architecture for real-world use.", icon: <Activity size={28}/> }
                       ].map((item, idx) => (
-                          <div key={idx} className="relative group flex flex-col items-center text-center w-64">
+                          <div key={idx} className="relative group flex flex-col items-center text-center w-full sm:w-1/2 md:w-1/4 max-w-[280px]">
                               <div className="relative w-20 h-20 flex items-center justify-center mb-6">
                                   {/* Static outer ring */}
                                   <div className="absolute inset-0 rounded-full bg-slate-800 border-2 border-slate-700"></div>
