@@ -312,6 +312,27 @@ const ProjectModal = ({ project, onClose }) => {
 const MainView = ({ scrollTo, navigateToResearch }) => {
   const [filter, setFilter] = useState('all');
   const [selectedProject, setSelectedProject] = useState(null);
+  const aboutSectionRef = useRef(null);
+  const [aboutSectionInView, setAboutSectionInView] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting) {
+          setAboutSectionInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    if (aboutSectionRef.current) {
+      observer.observe(aboutSectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   // Structured Project Data for Filtering
   const projectsData = [
@@ -506,19 +527,19 @@ const MainView = ({ scrollTo, navigateToResearch }) => {
              {/* Decorative Background Blur behind text */}
              <div className="absolute -left-20 -top-20 w-96 h-96 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none"></div>
 
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900/80 border border-cyan-500/30 text-cyan-400 text-xs font-mono shadow-[0_0_15px_rgba(6,182,212,0.3)]">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900/80 border border-cyan-500/30 text-cyan-400 text-sm font-mono shadow-[0_0_15px_rgba(6,182,212,0.3)]">
               <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
               FULL-STACK & RESEARCH
             </div>
             
-            <h1 className="text-5xl md:text-7xl font-extrabold text-white leading-[1.05] tracking-tight">
+            <h1 className="text-6xl md:text-8xl font-extrabold text-white leading-[1.05] tracking-tight">
               I am <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 animate-gradient-x bg-[length:200%_auto]">
                 Anupa Supul
               </span>
             </h1>
             
-            <p className="text-lg md:text-xl text-slate-400 leading-relaxed max-w-xl border-l-2 border-slate-800 pl-6 relative">
+            <p className="text-xl md:text-2xl text-slate-400 leading-relaxed max-w-xl border-l-2 border-slate-800 pl-6 relative">
               <span className="absolute top-0 left-0 w-0.5 h-full bg-gradient-to-b from-cyan-500 to-transparent"></span>
               A <strong>Computer Science Undergraduate</strong> at the University of Ruhuna. 
               I am a <span className="text-slate-200 font-semibold">full-stack–leaning developer</span> focused on building real-world systems, not just academic demos.
@@ -526,10 +547,10 @@ const MainView = ({ scrollTo, navigateToResearch }) => {
             
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <div className="flex items-center gap-4 text-slate-500">
-                <Code size={24} className="animate-float-slow" />
-                <Database size={24} className="animate-float-slow animation-delay-2000" />
-                <Server size={24} className="animate-float-slow animation-delay-4000" />
-                <GitBranch size={24} className="animate-float-slow" />
+                <Code size={28} className="animate-float-slow" />
+                <Database size={28} className="animate-float-slow animation-delay-2000" />
+                <Server size={28} className="animate-float-slow animation-delay-4000" />
+                <GitBranch size={28} className="animate-float-slow" />
               </div>
             </div>
           </div>
@@ -587,7 +608,7 @@ const MainView = ({ scrollTo, navigateToResearch }) => {
       </section>
 
       {/* ABOUT SECTION */}
-      <section id="about" className="py-32 bg-slate-950 relative overflow-hidden">
+      <section id="about" ref={aboutSectionRef} className="py-32 bg-slate-950 relative overflow-hidden">
         {/* Subtle glowing elements */}
         <div className="absolute top-1/2 left-0 w-64 h-64 bg-cyan-500/5 rounded-full blur-[80px] -translate-y-1/2"></div>
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500/5 rounded-full blur-[100px]"></div>
@@ -595,24 +616,23 @@ const MainView = ({ scrollTo, navigateToResearch }) => {
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="grid lg:grid-cols-2 gap-20 items-center">
             {/* Left: Narrative */}
-            <div className="space-y-8">
+            <div className={`space-y-8 ${aboutSectionInView ? 'animate-fade-in-up' : 'opacity-0'}`}>
                <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
                  Beyond the <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-500">Syntax</span>
                </h2>
                <div className="space-y-6 text-lg text-slate-400 leading-relaxed font-light">
                  <p>
-                   I am <strong>Anupa Supul</strong>, a Computer Science undergraduate at the <span className="font-semibold text-cyan-400">University of Ruhuna</span>. 
-                   I define myself as a developer-researcher who bridges the gap between software engineering and applied data science.
+                   I'm a Computer Science undergraduate from Sri Lanka, building a bridge between two worlds: full-stack development and academic research. My focus is on creating systems that are not only well-engineered but also informed by analytical rigor.
                  </p>
                  <p>
-                   My work isn't just about writing code—it's about building <strong>practical systems</strong> backed by research. Whether I'm deploying a full-stack application or training a CNN model for crop disease detection, I focus on real data, real problems, and real outcomes.
+                   I believe the most durable solutions come from a deep understanding of the problem. That's why I apply a research-oriented mindset to software, and a systems-building approach to research—whether it's architecting a scalable web application or training a neural network to identify agricultural diseases.
                  </p>
                </div>
             </div>
 
             {/* Right: Interactive Dual Mindset Visual */}
             <div className="grid gap-6">
-              <GlassCard className="hover:bg-slate-900/60">
+              <GlassCard className={`hover:bg-slate-900/60 ${aboutSectionInView ? 'animate-slide-in-right' : 'opacity-0'}`}>
                   <div className="flex items-start gap-6">
                       <div className="p-4 bg-cyan-500/10 rounded-lg text-cyan-400">
                           <Terminal size={32} />
@@ -620,13 +640,13 @@ const MainView = ({ scrollTo, navigateToResearch }) => {
                       <div>
                           <h3 className="text-xl font-bold text-white mb-2">The Builder</h3>
                           <p className="text-slate-400 text-sm leading-relaxed">
-                              Full-stack-leaning developer. I build scalable backends with Java Spring Boot & Node.js, and intuitive frontends with React & Tailwind.
+                              I build and deploy complete systems with a focus on clean architecture and user-centric design. My toolkit includes Java Spring Boot and Node.js for the backend, and React with Tailwind for creating responsive, intuitive frontends.
                           </p>
                       </div>
                   </div>
               </GlassCard>
 
-              <GlassCard className="hover:bg-slate-900/60">
+              <GlassCard className={`hover:bg-slate-900/60 ${aboutSectionInView ? 'animate-slide-in-left' : 'opacity-0'}`} style={{ animationDelay: '200ms' }}>
                   <div className="flex items-start gap-6">
                       <div className="p-4 bg-purple-500/10 rounded-lg text-purple-400">
                           <Activity size={32} />
@@ -634,7 +654,7 @@ const MainView = ({ scrollTo, navigateToResearch }) => {
                       <div>
                           <h3 className="text-xl font-bold text-white mb-2">The Researcher</h3>
                           <p className="text-slate-400 text-sm leading-relaxed">
-                              Investigating plant leaf disease detection using Deep Learning (CNN). Currently focusing on Rice and Chilli crops.
+                              My current research involves using Convolutional Neural Networks (CNNs) to detect and classify leaf diseases in rice and chilli plants. It's a tangible application of machine learning that aims to solve a real-world problem in agriculture.
                           </p>
                       </div>
                   </div>
@@ -1228,6 +1248,21 @@ const App = () => {
           50% { transform: translateY(-20px); }
           100% { transform: translateY(0px); }
         }
+
+        @keyframes slide-in-left {
+          from { opacity: 0; transform: translateX(-20px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes slide-in-right {
+          from { opacity: 0; transform: translateX(20px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        .animate-slide-in-left {
+            animation: slide-in-left 0.8s ease-out forwards;
+        }
+        .animate-slide-in-right {
+            animation: slide-in-right 0.8s ease-out forwards;
+        }
       `}</style>
 
       {/* Navigation */}
@@ -1242,7 +1277,7 @@ const App = () => {
             <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-slate-700 group-hover:border-cyan-500 transition-colors">
               {/* Navbar Profile Photo Placeholder */}
               <img 
-                src="/api/placeholder/40/40" 
+                src="/profile.jpeg" 
                 alt="Profile" 
                 className="w-full h-full object-cover"
               />
