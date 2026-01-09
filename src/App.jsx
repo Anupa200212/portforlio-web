@@ -1259,6 +1259,24 @@ const ResearchView = () => {
 
 // --- Main Component ---
 
+const NavLink = ({ id, label, isAction = false, onClick, isActive }) => (
+  <button
+    onClick={() => onClick(id)}
+    className={`text-sm font-medium transition-all duration-300 relative px-2 ${
+      isAction 
+        ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/50 rounded-full px-4 py-1 hover:bg-cyan-500 hover:text-black' 
+        : isActive
+          ? 'text-cyan-400 font-bold drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]' 
+          : 'text-slate-400 hover:text-cyan-300'
+    }`}
+  >
+    {label}
+    {!isAction && isActive && (
+      <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)] rounded-full"></span>
+    )}
+  </button>
+);
+
 const App = () => {
   const [currentView, setCurrentView] = useState('main'); // 'main' | 'research'
   const [activeSection, setActiveSection] = useState('home');
@@ -1326,24 +1344,6 @@ const App = () => {
     }
     setActiveSection(id);
   };
-
-  const NavLink = ({ id, label, isAction = false }) => (
-    <button
-      onClick={() => handleNavigation(id)}
-      className={`text-sm font-medium transition-all duration-300 relative px-2 ${
-        isAction 
-          ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/50 rounded-full px-4 py-1 hover:bg-cyan-500 hover:text-black' 
-          : activeSection === id || (id === 'research-page' && currentView === 'research')
-            ? 'text-cyan-400 font-bold drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]' 
-            : 'text-slate-400 hover:text-cyan-300'
-      }`}
-    >
-      {label}
-      {!isAction && (activeSection === id || (id === 'research-page' && currentView === 'research')) && (
-        <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)] rounded-full"></span>
-      )}
-    </button>
-  );
 
   return (
     <div className="min-h-screen bg-slate-950 font-sans text-slate-300 selection:bg-cyan-500 selection:text-white overflow-x-hidden">
@@ -1522,12 +1522,12 @@ const App = () => {
           
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center space-x-8">
-            <NavLink id="home" label="Home" />
-            <NavLink id="about" label="About" />
-            <NavLink id="skills" label="Tech Stack" />
-            <NavLink id="projects" label="Projects" />
-            <NavLink id="research-page" label="Research Lab" isAction={true} />
-            <NavLink id="contact" label="Contact" />
+            <NavLink id="home" label="Home" onClick={handleNavigation} isActive={activeSection === 'home'} />
+            <NavLink id="about" label="About" onClick={handleNavigation} isActive={activeSection === 'about'} />
+            <NavLink id="skills" label="Tech Stack" onClick={handleNavigation} isActive={activeSection === 'skills'} />
+            <NavLink id="projects" label="Projects" onClick={handleNavigation} isActive={activeSection === 'projects'} />
+            <NavLink id="research-page" label="Research Lab" onClick={handleNavigation} isActive={currentView === 'research'} isAction={true} />
+            <NavLink id="contact" label="Contact" onClick={handleNavigation} isActive={activeSection === 'contact'} />
           </div>
 
           {/* Mobile Menu Button */}
