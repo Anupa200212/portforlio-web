@@ -564,7 +564,7 @@ const MainView = ({ scrollTo, navigateToResearch }) => {
             
             <h1 className="text-6xl md:text-8xl font-extrabold text-white leading-[1.05] tracking-tight">
               I am <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 animate-gradient-x bg-[length:200%_auto]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 animate-gradient-x">
                 Anupa Supul
               </span>
             </h1>
@@ -1289,6 +1289,18 @@ const App = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [currentView]);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
+    return () => {
+      document.body.classList.remove('overflow-hidden');
+    };
+  }, [mobileMenuOpen]);
+
   const handleNavigation = (id) => {
     setMobileMenuOpen(false);
     
@@ -1407,6 +1419,7 @@ const App = () => {
         .animate-gradient-x {
            background-size: 200% 200%;
            animation: gradient-x 5s ease infinite;
+           will-change: background-position;
         }
         @keyframes pulse-slow {
            0%, 100% { opacity: 0.3; }
@@ -1520,23 +1533,29 @@ const App = () => {
           {/* Mobile Menu Button */}
           <div className="md:hidden z-50">
             <button 
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                onClick={() => setMobileMenuOpen(true)}
                 className="p-2 text-slate-300 hover:text-white"
             >
-                {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                <Menu size={24} />
             </button>
           </div>
         </div>
 
         {/* Mobile Nav Overlay */}
         {mobileMenuOpen && (
-            <div className="fixed inset-0 bg-slate-950 z-40 flex flex-col items-center justify-center space-y-8 animate-fade-in md:hidden">
-                <button onClick={() => handleNavigation('home')} className="text-2xl font-bold text-white">Home</button>
-                <button onClick={() => handleNavigation('about')} className="text-2xl font-bold text-white">About</button>
-                <button onClick={() => handleNavigation('skills')} className="text-2xl font-bold text-white">Skills</button>
-                <button onClick={() => handleNavigation('projects')} className="text-2xl font-bold text-white">Projects</button>
-                <button onClick={() => handleNavigation('research-page')} className="text-2xl font-bold text-cyan-400">Research Lab</button>
-                <button onClick={() => handleNavigation('contact')} className="text-2xl font-bold text-white">Contact</button>
+            <div className="fixed inset-0 bg-slate-950/95 backdrop-blur-sm z-50 flex flex-col items-center justify-center space-y-8 animate-fade-in md:hidden">
+                <button 
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="absolute top-6 right-6 p-2 text-slate-400 hover:text-white"
+                >
+                    <X size={28} />
+                </button>
+                <button onClick={() => handleNavigation('home')} className="text-3xl font-bold text-slate-200 hover:text-cyan-400 transition-colors">Home</button>
+                <button onClick={() => handleNavigation('about')} className="text-3xl font-bold text-slate-200 hover:text-cyan-400 transition-colors">About</button>
+                <button onClick={() => handleNavigation('skills')} className="text-3xl font-bold text-slate-200 hover:text-cyan-400 transition-colors">Skills</button>
+                <button onClick={() => handleNavigation('projects')} className="text-3xl font-bold text-slate-200 hover:text-cyan-400 transition-colors">Projects</button>
+                <button onClick={() => handleNavigation('research-page')} className="text-3xl font-bold text-cyan-400 hover:text-cyan-300 transition-colors">Research Lab</button>
+                <button onClick={() => handleNavigation('contact')} className="text-3xl font-bold text-slate-200 hover:text-cyan-400 transition-colors">Contact</button>
             </div>
         )}
       </nav>
