@@ -18,7 +18,7 @@ const App = () => {
 
       // Only track sections in main view
       if (currentView === 'main') {
-        const sections = ['home', 'about', 'skills', 'research', 'projects', 'contact'];
+        const sections = ['home', 'about', 'skills', 'certifications', 'research', 'projects', 'contact'];
         const current = sections.find(section => {
           const element = document.getElementById(section);
           if (element) {
@@ -78,8 +78,8 @@ const App = () => {
 
       {/* Navigation */}
       <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled
-          ? 'bg-slate-950/80 backdrop-blur-xl shadow-lg shadow-cyan-900/10 py-3 md:py-4 border-b border-white/5 supports-[backdrop-filter]:bg-slate-950/60'
-          : 'bg-transparent py-4 md:py-6'
+        ? 'bg-slate-950/80 backdrop-blur-xl shadow-lg shadow-cyan-900/10 py-3 md:py-4 border-b border-white/5 supports-[backdrop-filter]:bg-slate-950/60'
+        : 'bg-transparent py-4 md:py-6'
         }`}>
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
           <div
@@ -104,6 +104,7 @@ const App = () => {
             <NavLink id="home" label="Home" onClick={handleNavigation} isActive={activeSection === 'home'} />
             <NavLink id="about" label="About" onClick={handleNavigation} isActive={activeSection === 'about'} />
             <NavLink id="skills" label="Tech Stack" onClick={handleNavigation} isActive={activeSection === 'skills'} />
+            <NavLink id="certifications" label="Certifications" onClick={handleNavigation} isActive={activeSection === 'certifications'} />
             <NavLink id="projects" label="Projects" onClick={handleNavigation} isActive={activeSection === 'projects'} />
             <NavLink id="research-page" label="Research Lab" onClick={handleNavigation} isActive={currentView === 'research'} isAction={true} />
             <NavLink id="contact" label="Contact" onClick={handleNavigation} isActive={activeSection === 'contact'} />
@@ -137,6 +138,7 @@ const App = () => {
                 { id: 'home', label: 'Home' },
                 { id: 'about', label: 'About' },
                 { id: 'skills', label: 'Skills' },
+                { id: 'certifications', label: 'Certifications' },
                 { id: 'projects', label: 'Projects' },
                 { id: 'research-page', label: 'Research Lab', special: true },
                 { id: 'contact', label: 'Contact' }

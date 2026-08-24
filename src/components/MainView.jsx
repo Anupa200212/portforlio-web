@@ -15,7 +15,10 @@ import {
     ArrowRight,
     ExternalLink,
     Linkedin,
-    Activity
+    Activity,
+    FileText,
+    Download,
+    Award
 } from 'lucide-react';
 import ProjectModal from './ProjectModal';
 
@@ -27,6 +30,8 @@ const MainView = ({ scrollTo, navigateToResearch }) => {
     const [aboutSectionInView, setAboutSectionInView] = useState(false);
     const skillsSectionRef = useRef(null);
     const [skillsSectionInView, setSkillsSectionInView] = useState(false);
+    const certificationsSectionRef = useRef(null);
+    const [certificationsSectionInView, setCertificationsSectionInView] = useState(false);
 
     useEffect(() => {
         const aboutObserver = new IntersectionObserver(
@@ -57,9 +62,24 @@ const MainView = ({ scrollTo, navigateToResearch }) => {
             skillsObserver.observe(skillsSectionRef.current);
         }
 
+        const certificationsObserver = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setCertificationsSectionInView(true);
+                    certificationsObserver.disconnect();
+                }
+            },
+            { threshold: 0.1 }
+        );
+
+        if (certificationsSectionRef.current) {
+            certificationsObserver.observe(certificationsSectionRef.current);
+        }
+
         return () => {
             if (aboutObserver) aboutObserver.disconnect();
             if (skillsObserver) skillsObserver.disconnect();
+            if (certificationsObserver) certificationsObserver.disconnect();
         };
     }, []);
 
@@ -287,11 +307,19 @@ const MainView = ({ scrollTo, navigateToResearch }) => {
                         </p>
 
                         <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                            <div className="flex items-center gap-4 text-slate-500">
-                                <Code size={28} className="animate-float-slow" />
-                                <Database size={28} className="animate-float-slow animation-delay-2000" />
-                                <Server size={28} className="animate-float-slow animation-delay-4000" />
-                                <GitBranch size={28} className="animate-float-slow" />
+                            <a href="/cv/Anupa-Supul-CV.pdf" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-cyan-500 text-black font-bold hover:bg-cyan-400 hover:scale-105 transition-all duration-300">
+                                <FileText size={20} />
+                                View Resume
+                            </a>
+                            <a href="/cv/Anupa-Supul-CV.pdf" download="Anupa-Supul-CV.pdf" className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white font-bold hover:bg-slate-800 hover:border-cyan-500 hover:scale-105 transition-all duration-300">
+                                <Download size={20} />
+                                Download CV
+                            </a>
+                            <div className="flex items-center gap-4 text-slate-500 ml-0 sm:ml-4 justify-center sm:justify-start">
+                                <Code size={24} className="animate-float-slow" />
+                                <Database size={24} className="animate-float-slow animation-delay-2000" />
+                                <Server size={24} className="animate-float-slow animation-delay-4000" />
+                                <GitBranch size={24} className="animate-float-slow" />
                             </div>
                         </div>
                     </div>
@@ -662,6 +690,50 @@ const MainView = ({ scrollTo, navigateToResearch }) => {
                                 ))}
                             </div>
                         </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* CERTIFICATIONS SECTION */}
+            <section id="certifications" ref={certificationsSectionRef} className="py-24 relative overflow-hidden bg-slate-950">
+                <div className="max-w-7xl mx-auto px-6 relative z-10">
+                    <div className="flex items-center gap-4 mb-16 justify-center">
+                        <div className={`p-4 rounded-full bg-yellow-500/10 border-2 border-yellow-500/30 text-yellow-400 shadow-[0_0_20px_rgba(234,179,8,0.2)] transition-all duration-700 ${certificationsSectionInView ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
+                            <Award size={36} />
+                        </div>
+                        <h2 className={`text-4xl md:text-5xl font-bold text-white transition-all duration-700 ${certificationsSectionInView ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`}>
+                            Certifications
+                        </h2>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                        {[
+                            { title: 'AWS Certified Cloud Practitioner', file: 'aws-cloud-practitioner-essentials.pdf', desc: 'Validated overall understanding of the AWS Cloud platform, covering basic cloud concepts and security.' },
+                            { title: 'AWS Technical Essentials', file: 'aws-technical-essentials.pdf', desc: 'Foundational knowledge of AWS products, services, and common solutions. Hands-on experience with core AWS services.' }
+                        ].map((cert, index) => (
+                            <div key={index} className={`group bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 hover:border-yellow-500/50 transition-all hover:shadow-[0_0_30px_rgba(234,179,8,0.1)] flex flex-col p-8 will-change-transform ${certificationsSectionInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: `${200 + index * 200}ms` }}>
+                                <div className="flex items-start justify-between mb-4">
+                                    <div className="p-3 bg-yellow-500/10 rounded-xl text-yellow-400 group-hover:scale-110 transition-transform">
+                                        <Award size={24} />
+                                    </div>
+                                    <span className="px-3 py-1 bg-slate-800 text-slate-300 text-xs rounded-full border border-slate-700 font-mono">AWS</span>
+                                </div>
+                                <h3 className="text-xl font-bold text-white mb-3">
+                                    {cert.title}
+                                </h3>
+                                <p className="text-slate-400 text-sm mb-8 flex-grow">
+                                    {cert.desc}
+                                </p>
+                                <div className="flex gap-4 mt-auto">
+                                    <a href={`/certificates/${cert.file}`} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-bold text-yellow-400 border border-yellow-500/30 rounded-lg hover:bg-yellow-500/10 transition-colors">
+                                        View
+                                    </a>
+                                    <a href={`/certificates/${cert.file}`} download={cert.file} className="p-2 text-slate-400 border border-slate-700 rounded-lg hover:bg-slate-800 hover:text-white transition-colors" title="Download Certificate">
+                                        <Download size={20} />
+                                    </a>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </section>
