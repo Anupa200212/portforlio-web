@@ -711,24 +711,39 @@ const MainView = ({ scrollTo, navigateToResearch }) => {
                             { title: 'AWS Certified Cloud Practitioner', file: 'aws-cloud-practitioner-essentials.pdf', desc: 'Validated overall understanding of the AWS Cloud platform, covering basic cloud concepts and security.' },
                             { title: 'AWS Technical Essentials', file: 'aws-technical-essentials.pdf', desc: 'Foundational knowledge of AWS products, services, and common solutions. Hands-on experience with core AWS services.' }
                         ].map((cert, index) => (
-                            <div key={index} className={`group bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 hover:border-yellow-500/50 transition-all hover:shadow-[0_0_30px_rgba(234,179,8,0.1)] flex flex-col p-8 will-change-transform ${certificationsSectionInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: `${200 + index * 200}ms` }}>
-                                <div className="flex items-start justify-between mb-4">
-                                    <div className="p-3 bg-yellow-500/10 rounded-xl text-yellow-400 group-hover:scale-110 transition-transform">
-                                        <Award size={24} />
+                            <div key={index} className={`relative group bg-slate-900/50 backdrop-blur-xl rounded-3xl overflow-hidden border border-white/10 hover:border-yellow-500/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-20px_rgba(234,179,8,0.3)] flex flex-col p-8 will-change-transform ${certificationsSectionInView ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: `${200 + index * 200}ms` }}>
+
+                                {/* Inner Glow / Gradient Blob */}
+                                <div className="absolute -inset-1 bg-gradient-to-r from-yellow-500/20 via-orange-500/20 to-transparent blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+
+                                <div className="relative z-10 flex items-start justify-between mb-8">
+                                    <div className="relative">
+                                        <div className="absolute inset-0 bg-yellow-400/20 rounded-2xl blur-md animate-pulse"></div>
+                                        <div className="relative p-4 bg-gradient-to-br from-slate-800 to-slate-900 border border-white/10 rounded-2xl text-yellow-400 group-hover:scale-110 group-hover:text-yellow-300 transition-all duration-500 shadow-xl">
+                                            <Award size={32} />
+                                        </div>
                                     </div>
-                                    <span className="px-3 py-1 bg-slate-800 text-slate-300 text-xs rounded-full border border-slate-700 font-mono">AWS</span>
+
+                                    {/* Premium Badge */}
+                                    <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 text-yellow-500 group-hover:text-yellow-400 text-xs font-mono font-bold uppercase tracking-widest shadow-[0_0_15px_rgba(234,179,8,0.1)] group-hover:shadow-[0_0_15px_rgba(234,179,8,0.3)] transition-all">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse"></span>
+                                        AWS
+                                    </div>
                                 </div>
-                                <h3 className="text-xl font-bold text-white mb-3">
+
+                                <h3 className="relative z-10 text-2xl font-bold text-white mb-4 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-yellow-400 group-hover:to-orange-400 transition-all duration-300">
                                     {cert.title}
                                 </h3>
-                                <p className="text-slate-400 text-sm mb-8 flex-grow">
+
+                                <p className="relative z-10 text-slate-400 text-base mb-8 flex-grow leading-relaxed font-light">
                                     {cert.desc}
                                 </p>
-                                <div className="flex gap-4 mt-auto">
-                                    <a href={`/certificates/${cert.file}`} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-bold text-yellow-400 border border-yellow-500/30 rounded-lg hover:bg-yellow-500/10 transition-colors">
-                                        View
+
+                                <div className="relative z-10 flex gap-4 mt-auto">
+                                    <a href={`/certificates/${cert.file}`} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-2 py-3 text-sm font-bold text-black bg-yellow-500 rounded-xl hover:bg-yellow-400 shadow-[0_0_20px_rgba(234,179,8,0.2)] hover:shadow-[0_0_30px_rgba(234,179,8,0.4)] hover:-translate-y-1 transition-all duration-300">
+                                        View Certificate
                                     </a>
-                                    <a href={`/certificates/${cert.file}`} download={cert.file} className="p-2 text-slate-400 border border-slate-700 rounded-lg hover:bg-slate-800 hover:text-white transition-colors" title="Download Certificate">
+                                    <a href={`/certificates/${cert.file}`} download={cert.file} className="p-3 text-yellow-400/80 bg-slate-900 border border-yellow-500/30 rounded-xl hover:bg-yellow-500/10 hover:text-yellow-300 hover:border-yellow-400 hover:-translate-y-1 transition-all duration-300" title="Download Certificate">
                                         <Download size={20} />
                                     </a>
                                 </div>
